@@ -1,12 +1,29 @@
 "use client"
 
-import {Modal} from '@/components/ui/modal'
-const setUpPage=()=> {
-  return (
-    
-     <Modal title="pratham" description="hello duniya" isOpen onClose={()=>{}}>children</Modal> 
+import {useEffect} from "react"
+
+
+import {useStoreModal} from "@/hooks/use-store-modal"
+
+
+
+
+const SetUpPage = () => {
+ const onOpen = useStoreModal((state)=> state.onOpen);
+ const isOpen = useStoreModal((state) => state.isOpen);
+  
+ 
+ useEffect(()=> {
+   if(!isOpen){
+      onOpen();
+   }
+  },[isOpen, onOpen])
      
+  return (
+   <div>
+      root page
+   </div>
   )
   }
   
-  export default setUpPage
+  export default SetUpPage
