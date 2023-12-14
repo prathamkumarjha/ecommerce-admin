@@ -6,7 +6,7 @@ import { useStoreModal } from "@/hooks/use-store-modal"
 import { Modal } from "@/components/ui/modal"
 import { useForm } from "react-hook-form"
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "../ui/button";
 
@@ -49,10 +49,11 @@ export const StoreModal = () => {
                                                                                 <FormControl>
                                                                                         <Input placeholder="E-commerce" {...field} />
                                                                                 </FormControl>
+                                                                                <FormMessage/>
                                                                         </FormItem>
                                                                 )}/>
                                                                         <div className=" pt-6 space-x-2 items-center justify-end w-full">
-                                                                               <Button>cancel</Button>
+                                                                               <Button variant="outline" onClick={storeModal.onClose}>Cancel</Button>
                                                                                <Button>Submit</Button>
                                                                         </div>
 
