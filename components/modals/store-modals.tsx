@@ -7,11 +7,12 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import {z} from  "zod"
 
+import axios from "axios"
+
 import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -20,7 +21,7 @@ import {
 import { Input } from "@/components/ui/input"
 
 const formSchema = z.object({
-    storeName: z.string().min(1,{
+    name: z.string().min(1,{
     message: "name of the store is required",
     }),
   })
@@ -33,12 +34,18 @@ const formSchema = z.object({
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            storeName: "",
+            name: "",
         }
     })
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        console.log(values);
+    try{
+      const response = await  axios.post('/api/stores',values)
+        console.log("done",response);
+    }
+    catch(error){
+        console.log("error in submission",error)
+    }
     }
 
     return (
@@ -52,7 +59,7 @@ const formSchema = z.object({
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <FormField
                         control={form.control}
-                        name="storeName"
+                        name="name"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Store Name</FormLabel>
