@@ -1,3 +1,3 @@
 export default function dashboard() {
-  return <div>this will be the dashboard for </div>;
+  return <h1>Store Settings</h1>;
 }
