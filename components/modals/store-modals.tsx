@@ -49,6 +49,8 @@ export const StoreModal = () => {
       toast.error("store creation failed");
     } finally {
       setDisabled(false);
+
+      window.location.reload();
     }
   };
 
