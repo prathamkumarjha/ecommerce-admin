@@ -19,7 +19,8 @@ import { Store } from "@prisma/client";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
-
+import { AlertModal } from "./deletion-alert";
+import { useState } from "react";
 const formSchema = z.object({
   newName: z.string().min(1, { message: "store name cannot be empty" }),
 });
@@ -28,13 +29,17 @@ interface SettingsFormProps {
   initialData: Store;
 }
 
-const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
+const Settings: React.FC<SettingsFormProps> = ({ initialData }) => {
   const params = useParams();
+
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const storeId = params.storeId;
 
   const onDelete = async () => {
     try {
+      setLoading(true);
       const response = await axios.delete(`/api/stores/${storeId}`);
     } catch (error) {
       console.error("Error deleting store:", error);
@@ -43,7 +48,7 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
     }
   };
 
-  const name: string = initialData.name;
+  const name = initialData.name;
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -65,10 +70,18 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
   return (
     <div className="pl-10 pr-10">
       <div className="pb-8 my-6">
+        <AlertModal
+          isOpen={open}
+          onClose={() => {
+            setOpen(false);
+          }}
+          onConfirm={onDelete}
+          loading={loading}
+        />
         <b>
           <div className="text-3xl pt-4  flex justify-between">
             Store Settings{" "}
-            <Button variant="destructive" onClick={onDelete}>
+            <Button variant="destructive" onClick={() => setOpen(true)}>
               <Trash2 className="h-4 w-4" />
             </Button>
           </div>
@@ -103,4 +116,4 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
   );
 };
 
-export default SettingsForm;
+export default Settings;
