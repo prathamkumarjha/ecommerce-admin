@@ -1,6 +1,6 @@
 "use client";
 
-import { useStoreModal } from "@/hooks/useStoreModal";
+import { useStoreModal } from "@/hooks/use-store-modal";
 import { useEffect } from "react";
 
 export default function Home() {
@@ -12,5 +12,5 @@ export default function Home() {
       onOpen();
     }
   }, [onOpen, isOpen]);
-  return <div>root page</div>;
+  return <></>;
 }
