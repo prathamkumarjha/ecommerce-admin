@@ -1,8 +1,8 @@
 "use client";
-
+import { ApiAlert } from "@/components/ui/api-alert";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import axios, { Axios } from "axios";
+import axios from "axios";
 import { Trash2 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -21,6 +21,8 @@ import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
 import { AlertModal } from "./deletion-alert";
 import { useState } from "react";
+import { useOrigin } from "@/hooks/use-origin";
+
 const formSchema = z.object({
   newName: z.string().min(1, { message: "store name cannot be empty" }),
 });
@@ -67,52 +69,66 @@ const Settings: React.FC<SettingsFormProps> = ({ initialData }) => {
       window.location.reload();
     }
   };
+
+  const origin = useOrigin();
   return (
-    <div className="pl-10 pr-10">
-      <div className="pb-8 my-6">
-        <AlertModal
-          isOpen={open}
-          onClose={() => {
-            setOpen(false);
-          }}
-          onConfirm={onDelete}
-          loading={loading}
-        />
-        <b>
-          <div className="text-3xl pt-4  flex justify-between">
-            Store Settings{" "}
-            <Button variant="destructive" onClick={() => setOpen(true)}>
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          </div>
-        </b>
-
-        <div className="text-muted-foreground mt-4">
-          manage store preferences
-        </div>
-      </div>
-      <Separator />
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 pb-8">
-          <FormField
-            control={form.control}
-            name="newName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="" {...field} className="w-44 h-8" />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
+    <>
+      <div className="pl-10 pr-10">
+        <div className="pb-8 my-6">
+          <AlertModal
+            isOpen={open}
+            onClose={() => {
+              setOpen(false);
+            }}
+            onConfirm={onDelete}
+            loading={loading}
           />
-          <Button type="submit">Submit</Button>
-        </form>
-      </Form>
-      <Separator />
-    </div>
+          <b>
+            <div className="text-3xl pt-4  flex justify-between">
+              Store Settings{" "}
+              <Button variant="destructive" onClick={() => setOpen(true)}>
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          </b>
+
+          <div className="text-muted-foreground mt-4">
+            manage store preferences
+          </div>
+        </div>
+        <Separator />
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-8 pb-8"
+          >
+            <FormField
+              control={form.control}
+              name="newName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="" {...field} className="w-44 h-8" />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit">Submit</Button>
+          </form>
+        </Form>
+        <Separator />
+      </div>
+      <div className="px-8 pt-4">
+        <ApiAlert
+          title="NEXT_PUBLIC_API_URL"
+          description={`${origin}/api/${initialData.id}`}
+          variant="public"
+        />
+      </div>
+    </>
   );
 };
 

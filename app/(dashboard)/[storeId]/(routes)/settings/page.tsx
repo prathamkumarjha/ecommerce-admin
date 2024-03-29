@@ -4,6 +4,8 @@ import { auth } from "@clerk/nextjs";
 import prismadb from "@/lib/prismadb";
 
 import SettingsForm from "./components/settings-form";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { ApiAlert } from "@/components/ui/api-alert";
 
 const SettingsPage = async ({ params }: { params: { storeId: string } }) => {
   const { userId } = auth();
@@ -25,7 +27,7 @@ const SettingsPage = async ({ params }: { params: { storeId: string } }) => {
 
   return (
     <div className="flex-col">
-      <div className="flex-1 space-y-4 p-8 pt-6">
+      <div>
         <SettingsForm initialData={store} />
       </div>
     </div>
