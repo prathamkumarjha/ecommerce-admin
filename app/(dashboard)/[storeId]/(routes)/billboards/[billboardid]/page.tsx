@@ -22,6 +22,7 @@ import toast from "react-hot-toast";
 import { AlertModal } from "@/components/deletion-alert";
 import { useState } from "react";
 import { useOrigin } from "@/hooks/use-origin";
+import ImageUpload from "@/components/ui/image-upload";
 
 const formSchema = z.object({
   newName: z.string().min(1, { message: "store name cannot be empty" }),
@@ -68,7 +69,6 @@ const Settings: React.FC<SettingsFormProps> = ({ initialData }) => {
       window.location.reload();
     }
   };
-
   const origin = useOrigin();
   return (
     <>
@@ -112,15 +112,34 @@ const Settings: React.FC<SettingsFormProps> = ({ initialData }) => {
               name="newName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Label</FormLabel>
+                  <FormLabel>Upload Image</FormLabel>
                   <FormControl>
-                    <Input placeholder="" {...field} className="w-44 h-8" />
+                    <ImageUpload
+                      value={field.value ? [field.value] : []}
+                      disabled={loading}
+                      onChange={(url) => field.onChange(url)}
+                      onRemove={() => field.onChange("")}
+                    />
                   </FormControl>
-
                   <FormMessage />
                 </FormItem>
               )}
             />
+            <div className="grid grid-cols-3 gap-8">
+              <FormField
+                control={form.control}
+                name="newName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Label</FormLabel>
+                    <FormControl>
+                      <Input disabled={loading} placeholder="" className="w-44 h-8" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <Button type="submit">Submit</Button>
           </form>
         </Form>
