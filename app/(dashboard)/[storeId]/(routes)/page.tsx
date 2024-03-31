@@ -1,16 +1,27 @@
 import prismadb from "@/lib/prismadb";
+import { auth } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
 
-interface DashBoardPageProps {
-  params: { StoreId: string };
+export default async function dashboard({
+  params,
+}: {
+  params: { storeId: string };
+}) {
+  try {
+    const { userId } = auth();
+    if (!userId) {
+      redirect("/sign-in");
+    }
+
+    const store = await prismadb.store.findFirst({
+      where: {
+        id: params.storeId,
+      },
+    });
+
+    return store?.name;
+  } catch (error) {
+    console.error("Error fetching store:", error);
+    return null;
+  }
 }
-
-const DashBoardPage: React.FC<DashBoardPageProps> = async ({ params }) => {
-  const store = await prismadb.store.findFirst({
-    where: {
-      id: params.StoreId,
-    },
-  });
-  return <div>Active Store: {store?.name}</div>;
-};
-
-export default DashBoardPage;
