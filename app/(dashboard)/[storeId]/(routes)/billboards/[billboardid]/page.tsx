@@ -1,5 +1,4 @@
 "use client";
-import { ApiAlert } from "@/components/ui/api-alert";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
@@ -25,14 +24,15 @@ import { useOrigin } from "@/hooks/use-origin";
 import ImageUpload from "@/components/ui/image-upload";
 
 const formSchema = z.object({
-  newName: z.string().min(1, { message: "store name cannot be empty" }),
+  label: z.string().min(1),
+  imageUrl: z.string().min(1),
 });
 
-interface SettingsFormProps {
+interface BillboardFormProps {
   initialData?: Billboard;
 }
 
-const Settings: React.FC<SettingsFormProps> = ({ initialData }) => {
+const Settings: React.FC<BillboardFormProps> = ({ initialData }) => {
   const params = useParams();
 
   const [open, setOpen] = useState(false);
@@ -53,9 +53,7 @@ const Settings: React.FC<SettingsFormProps> = ({ initialData }) => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      newName: "",
-    },
+    defaultValues: {},
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -83,7 +81,7 @@ const Settings: React.FC<SettingsFormProps> = ({ initialData }) => {
             loading={loading}
           />
           <b>
-            <div className="text-3xl pt-4  flex justify-between">
+            <div className="text-3xl flex justify-between">
               {initialData ? "BillBoard Settings" : "Create BillBoard"}
               {initialData ? (
                 <Button variant="destructive" onClick={() => setOpen(true)}>
@@ -95,7 +93,7 @@ const Settings: React.FC<SettingsFormProps> = ({ initialData }) => {
             </div>
           </b>
 
-          <div className="text-muted-foreground mt-2">
+          <div className="text-muted-foreground">
             {initialData
               ? "=create changes on your billboard"
               : "Add a new BillBoard"}
@@ -109,7 +107,7 @@ const Settings: React.FC<SettingsFormProps> = ({ initialData }) => {
           >
             <FormField
               control={form.control}
-              name="newName"
+              name="label"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Upload Image</FormLabel>
@@ -128,12 +126,17 @@ const Settings: React.FC<SettingsFormProps> = ({ initialData }) => {
             <div className="grid grid-cols-3 gap-8">
               <FormField
                 control={form.control}
-                name="newName"
+                name="imageUrl"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Label</FormLabel>
                     <FormControl>
-                      <Input disabled={loading} placeholder="" className="w-44 h-8" {...field} />
+                      <Input
+                        disabled={loading}
+                        placeholder=""
+                        className="w-44 h-8"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -144,13 +147,6 @@ const Settings: React.FC<SettingsFormProps> = ({ initialData }) => {
           </form>
         </Form>
         <Separator />
-      </div>
-      <div className="px-8 pt-4">
-        <ApiAlert
-          title="NEXT_PUBLIC_API_URL"
-          description="coming soon..."
-          variant="public"
-        />
       </div>
     </>
   );
