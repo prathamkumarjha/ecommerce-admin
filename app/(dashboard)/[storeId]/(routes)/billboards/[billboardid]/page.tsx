@@ -57,14 +57,28 @@ const Settings: React.FC<BillboardFormProps> = ({ initialData }) => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      const change = await axios.patch(`/api/stores/${storeId}`, values);
-    } catch (error) {
-      toast.error("name change failed");
-      console.log("rename", error);
-    } finally {
-      toast.success("rename completed");
-      window.location.reload();
+    if (initialData) {
+      try {
+        // const change = await axios.patch(`/api/stores/${storeId}`, values);
+        console.log(values);
+      } catch (error) {
+        toast.error("name change failed");
+        console.log("rename", error);
+      } finally {
+        toast.success("rename completed");
+        // window.location.reload();
+      }
+    } else {
+      try {
+        const change = await axios.post(`/api/${storeId}`, values);
+        console.log(change);
+      } catch (error) {
+        toast.error("name change failed");
+        console.log("rename", error);
+      } finally {
+        toast.success("rename completed");
+        // window.location.reload();
+      }
     }
   };
   const origin = useOrigin();
@@ -107,7 +121,7 @@ const Settings: React.FC<BillboardFormProps> = ({ initialData }) => {
           >
             <FormField
               control={form.control}
-              name="label"
+              name="imageUrl"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Upload Image</FormLabel>
@@ -126,7 +140,7 @@ const Settings: React.FC<BillboardFormProps> = ({ initialData }) => {
             <div className="grid grid-cols-3 gap-8">
               <FormField
                 control={form.control}
-                name="imageUrl"
+                name="label"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Label</FormLabel>
