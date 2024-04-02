@@ -30,7 +30,7 @@ export async function POST ( req:Request, ) {
         return NextResponse.json(store)
     }
     catch(error){
-            console.log("[stores/route",error)
+            console.log("[stores/route]",error)
             return new NextResponse("Internal error", {status:500})
     }
 

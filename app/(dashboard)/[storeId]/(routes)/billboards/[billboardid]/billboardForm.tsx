@@ -20,9 +20,8 @@ import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
 import { AlertModal } from "@/components/deletion-alert";
 import { useState } from "react";
-import { useOrigin } from "@/hooks/use-origin";
 import ImageUpload from "@/components/ui/image-upload";
-
+import { useRouter } from "next/navigation";
 const formSchema = z.object({
   label: z.string().min(1),
   imageUrl: z.string().min(1),
@@ -35,6 +34,7 @@ interface BillboardFormProps {
 const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
   const params = useParams();
 
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -43,11 +43,11 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
   const onDelete = async () => {
     try {
       setLoading(true);
-      const response = await axios.delete(`/api/stores/${storeId}`);
+      await axios.delete(`/api/${storeId}/billboard/${initialData?.id}`);
     } catch (error) {
       console.error("Error deleting store:", error);
     } finally {
-      window.location.reload();
+      router.refresh();
     }
   };
 
@@ -62,29 +62,30 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (initialData) {
       try {
-        // const change = await axios.patch(`/api/stores/${storeId}`, values);
-        console.log(values);
+        await axios.patch(
+          `/api/${storeId}/billboard/${initialData.id}`,
+          values
+        );
       } catch (error) {
-        toast.error("name change failed");
+        toast.error("BillBoard update failed");
         console.log("rename", error);
       } finally {
         toast.success("rename completed");
-        // window.location.reload();
+        router.refresh();
       }
     } else {
       try {
-        const change = await axios.post(`/api/${storeId}`, values);
-        console.log(change);
+        await axios.post(`/api/${storeId}/billboard`, values);
       } catch (error) {
         toast.error("name change failed");
         console.log("rename", error);
       } finally {
         toast.success("rename completed");
-        // window.location.reload();
+        router.refresh();
       }
     }
   };
-  const origin = useOrigin();
+
   return (
     <>
       <div className="pl-10 pr-10">
@@ -112,7 +113,7 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
 
           <div className="text-muted-foreground">
             {initialData
-              ? "=create changes on your billboard"
+              ? "create changes on your billboard"
               : "Add a new BillBoard"}
           </div>
         </div>

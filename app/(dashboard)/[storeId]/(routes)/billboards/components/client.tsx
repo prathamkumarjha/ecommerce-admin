@@ -4,16 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-
+import { Billboard } from "@prisma/client";
 export default function BillboardsClient({
   params,
 }: {
   params: { storeId: string };
 }) {
   const router = useRouter();
-  const newer = "new";
   const handleAddNewClick = () => {
-    router.push(`/${params.storeId}/billboards/${newer}`);
+    router.push(`/${params.storeId}/billboards/new`);
   };
 
   return (
