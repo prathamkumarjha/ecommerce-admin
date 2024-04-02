@@ -11,9 +11,9 @@ export default function BillboardsClient({
   params: { storeId: string };
 }) {
   const router = useRouter();
-
+  const newer = "new";
   const handleAddNewClick = () => {
-    router.push(`/${params.storeId}/billboards/new`);
+    router.push(`/${params.storeId}/billboards/${newer}`);
   };
 
   return (
