@@ -48,6 +48,7 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
       console.error("Error deleting store:", error);
     } finally {
       router.refresh();
+      router.push("./");
     }
   };
 
@@ -72,6 +73,7 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
       } finally {
         toast.success("rename completed");
         router.refresh();
+        router.push("./");
       }
     } else {
       try {
@@ -82,6 +84,7 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
       } finally {
         toast.success("rename completed");
         router.refresh();
+        router.push("./");
       }
     }
   };

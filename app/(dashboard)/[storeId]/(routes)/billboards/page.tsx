@@ -2,8 +2,9 @@ import { auth } from "@clerk/nextjs";
 import prismadb from "@/lib/prismadb";
 import { redirect } from "next/navigation";
 import BillboardsClient from "./components/client";
-
-export default function billboards({
+import { BillboardColumn } from "./components/columns";
+import { format } from "date-fns";
+export default async function billboards({
   params,
 }: {
   params: { storeId: string };
@@ -13,15 +14,20 @@ export default function billboards({
     redirect("/sign-in");
   }
 
-  const billboards = prismadb.billboard.findMany({
+  const billboards = await prismadb.billboard.findMany({
     where: {
       storeId: params.storeId,
     },
   });
 
+  const formattedBillboards: BillboardColumn[] = billboards.map((item) => ({
+    id: item.id,
+    label: item.label,
+    createdAt: format(item.createdAt, "MMMM do, yyyy"),
+  }));
   return (
     <>
-      <BillboardsClient params={params} />
+      <BillboardsClient data={formattedBillboards} />
     </>
   );
 }
