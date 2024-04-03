@@ -22,7 +22,7 @@ import toast from "react-hot-toast";
 import { AlertModal } from "@/components/deletion-alert";
 import { useState } from "react";
 import { useOrigin } from "@/hooks/use-origin";
-
+import { useRouter } from "next/navigation";
 const formSchema = z.object({
   newName: z.string().min(1, { message: "store name cannot be empty" }),
 });
@@ -33,6 +33,8 @@ interface SettingsFormProps {
 
 const Settings: React.FC<SettingsFormProps> = ({ initialData }) => {
   const params = useParams();
+
+  const router = useRouter();
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -66,7 +68,7 @@ const Settings: React.FC<SettingsFormProps> = ({ initialData }) => {
       console.log("rename", error);
     } finally {
       toast.success("rename completed");
-      window.location.reload();
+      router.refresh();
     }
   };
 
