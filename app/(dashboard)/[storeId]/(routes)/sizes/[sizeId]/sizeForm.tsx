@@ -131,6 +131,7 @@ const SizeForm: React.FC<sizeFormProps> = ({ initialData }) => {
                     <Input
                       disabled={loading}
                       placeholder="Size name"
+                      className="w-44 h-8"
                       {...field}
                     />
                   </FormControl>
@@ -149,6 +150,7 @@ const SizeForm: React.FC<sizeFormProps> = ({ initialData }) => {
                     <Input
                       disabled={loading}
                       placeholder="Size value"
+                      className="w-44 h-8"
                       {...field}
                     />
                   </FormControl>
