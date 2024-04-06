@@ -6,16 +6,16 @@ import { Plus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { Billboard } from "@prisma/client";
 import { DataTable } from "@/components/ui/data-table";
-import { BillboardColumn, columns } from "./columns";
+import { SizeColumn, columns } from "./columns";
 import { useOrigin } from "@/hooks/use-origin";
-interface BillBoardClientProps {
-  data: BillboardColumn[];
+interface sizeClientProps {
+  data: SizeColumn[];
 }
-export const BillboardsClient: React.FC<BillBoardClientProps> = ({ data }) => {
+export const SizesClient: React.FC<sizeClientProps> = ({ data }) => {
   const params = useParams();
   const router = useRouter();
   const handleAddNewClick = () => {
-    router.push(`/${params.storeId}/billboards/new`);
+    router.push(`/${params.storeId}/sizes/new`);
   };
 
   const origin = useOrigin();
@@ -23,9 +23,9 @@ export const BillboardsClient: React.FC<BillBoardClientProps> = ({ data }) => {
     <>
       <div className="p-4 flex justify-between">
         <div>
-          <b className="text-3xl">Billboards ({data.length})</b>
+          <b className="text-3xl">Sizes ({data.length})</b>
           <div className="text-muted-foreground">
-            Manage billboards for your store
+            Manage sizes for your store
           </div>
         </div>
         <Button onClick={handleAddNewClick}>
@@ -35,7 +35,7 @@ export const BillboardsClient: React.FC<BillBoardClientProps> = ({ data }) => {
       </div>
       <Separator />
       <div className="px-4">
-        <DataTable searchKey="label" columns={columns} data={data} />
+        <DataTable searchKey="name" columns={columns} data={data} />
       </div>
       <div className="px-8 pt-4">
         <ApiAlert
@@ -47,28 +47,28 @@ export const BillboardsClient: React.FC<BillBoardClientProps> = ({ data }) => {
       <div className="px-8 pt-4">
         <ApiAlert
           title="GET"
-          description={`${origin}/api/${params.storeId}/billboards/{billboardId}`}
+          description={`${origin}/api/${params.storeId}/sizes/{categoryId}`}
           variant="public"
         />
       </div>
       <div className="px-8 pt-4">
         <ApiAlert
           title="POST"
-          description={`${origin}/api/${params.storeId}/billboards`}
+          description={`${origin}/api/${params.storeId}/sizes`}
           variant="admin"
         />
       </div>
       <div className="px-8 pt-4">
         <ApiAlert
           title="PATCH"
-          description={`${origin}/api/${params.storeId}/billboards/{billboardId}`}
+          description={`${origin}/api/${params.storeId}/sizes/{categoryId}`}
           variant="admin"
         />
       </div>
       <div className="px-8 pt-4 pb-4">
         <ApiAlert
           title="DELETE"
-          description={`${origin}/api/${params.storeId}/billboards/{billboardId}`}
+          description={`${origin}/api/${params.storeId}/sizes/{categoryId}`}
           variant="admin"
         />
       </div>
@@ -76,4 +76,4 @@ export const BillboardsClient: React.FC<BillBoardClientProps> = ({ data }) => {
   );
 };
 
-export default BillboardsClient;
+export default SizesClient;
