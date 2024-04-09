@@ -14,7 +14,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { product } from "@prisma/client";
+import { product, image, category, color, size } from "@prisma/client";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
@@ -42,10 +42,22 @@ const formSchema = z.object({
 });
 
 interface ProductFormProps {
-  initialData: product | null;
+  initialData:
+    | (product & {
+        images: image[];
+      })
+    | null;
+  categories: category[];
+  colors: color[];
+  sizes: size[];
 }
 
-const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
+const ProductForm: React.FC<ProductFormProps> = ({
+  initialData,
+  categories,
+  colors,
+  sizes,
+}) => {
   const params = useParams();
 
   const router = useRouter();
@@ -177,18 +189,18 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
                 </FormItem>
               )}
             />
-            <div className="grid grid-cols-3 gap-8">
+            <div className="md:grid md:grid-cols-3 gap-8">
               <FormField
                 control={form.control}
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Label</FormLabel>
+                    <FormLabel>Name</FormLabel>
                     <FormControl>
                       <Input
                         disabled={loading}
                         placeholder=""
-                        className="w-44 h-8"
+                        // className="w-44 h-8"
                         {...field}
                       />
                     </FormControl>
@@ -196,14 +208,65 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
                   </FormItem>
                 )}
               />
-            </div>
 
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Price</FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={loading}
+                        placeholder=""
+                        // className="w-44 h-8"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="categoryId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Category</FormLabel>
+                    <Select
+                      disabled={loading}
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue
+                            defaultValue={field.value}
+                            placeholder="Select a category"
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {categories.map((category) => (
+                          <SelectItem key={category.id} value={category.id}>
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
-              name="billboardId"
+              name="sizeId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Billboard</FormLabel>
+                  <FormLabel>Size</FormLabel>
                   <Select
                     disabled={loading}
                     onValueChange={field.onChange}
@@ -214,14 +277,14 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
                       <SelectTrigger>
                         <SelectValue
                           defaultValue={field.value}
-                          placeholder="Select a billboard"
+                          placeholder="Select a size"
                         />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {billboards.map((billboard) => (
-                        <SelectItem key={billboard.id} value={billboard.id}>
-                          {billboard.label}
+                      {sizes.map((size) => (
+                        <SelectItem key={size.id} value={size.id}>
+                          {size.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -230,6 +293,40 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="colorId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Color</FormLabel>
+                  <Select
+                    disabled={loading}
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          defaultValue={field.value}
+                          placeholder="Select a color"
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {colors.map((color) => (
+                        <SelectItem key={color.id} value={color.id}>
+                          {color.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <Button type="submit">Submit</Button>
           </form>
         </Form>
