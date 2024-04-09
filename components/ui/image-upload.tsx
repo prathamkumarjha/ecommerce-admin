@@ -10,7 +10,7 @@ import { ImagePlus, Trash } from "lucide-react";
 interface ImageUploadProps {
   disabled?: boolean;
   onChange: (value: string) => void;
-  onRemove: () => void;
+  onRemove: (value: string) => void;
   value: string[];
 }
 
@@ -45,7 +45,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             <div className="z-10 absolute top-2 right-2">
               <Button
                 type="button"
-                onClick={() => onRemove()}
+                onClick={() => onRemove(url)}
                 variant="destructive"
                 size="sm"
               >
@@ -56,7 +56,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
           </div>
         ))}
       </div>
-      <CldUploadWidget onSuccess={onUpload} uploadPreset="fgq0pceb">
+      <CldUploadWidget onUpload={onUpload} uploadPreset="fgq0pceb">
         {({ open }) => {
           const onClick = () => {
             open();

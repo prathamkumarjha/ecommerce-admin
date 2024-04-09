@@ -14,12 +14,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Billboard, category as Category } from "@prisma/client";
+import { product } from "@prisma/client";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
 import { AlertModal } from "@/components/deletion-alert";
 import { useState } from "react";
+import ImageUpload from "@/components/ui/image-upload";
 import { useRouter } from "next/navigation";
 import {
   Select,
@@ -31,18 +32,20 @@ import {
 
 const formSchema = z.object({
   name: z.string().min(1),
-  billboardId: z.string().min(1),
+  images: z.object({ url: z.string() }).array(),
+  price: z.coerce.number().min(1),
+  categoryId: z.string().min(1),
+  colorId: z.string().min(1),
+  sizeId: z.string().min(1),
+  isFeatured: z.boolean().default(false).optional(),
+  isArchived: z.boolean().default(false).optional(),
 });
 
-interface CategoryFormProps {
-  initialData: Category | null;
-  billboards: Billboard[];
+interface ProductFormProps {
+  initialData: product | null;
 }
 
-const CategoryForm: React.FC<CategoryFormProps> = ({
-  initialData,
-  billboards,
-}) => {
+const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
   const params = useParams();
 
   const router = useRouter();
@@ -54,7 +57,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/${storeId}/categories/${initialData?.id}`);
+      await axios.delete(`/api/${storeId}/billboard/${initialData?.id}`);
     } catch (error) {
       console.error("Error deleting store:", error);
     } finally {
@@ -65,21 +68,32 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
-      name: "",
-      billboardId: "",
-    },
+    defaultValues: initialData
+      ? {
+          ...initialData,
+          price: parseFloat(String(initialData?.price)),
+        }
+      : {
+          name: "",
+          images: [],
+          price: 0,
+          categoryId: "",
+          colorId: "",
+          sizeId: "",
+          isFeatured: false,
+          isArchived: false,
+        },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (initialData) {
       try {
         await axios.patch(
-          `/api/${storeId}/categories/${initialData.id}`,
+          `/api/${storeId}/billboard/${initialData.id}`,
           values
         );
       } catch (error) {
-        toast.error("Category update failed");
+        toast.error("BillBoard update failed");
         console.log("rename", error);
       } finally {
         toast.success("rename completed");
@@ -88,9 +102,9 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
       }
     } else {
       try {
-        await axios.post(`/api/${storeId}/categories`, values);
+        await axios.post(`/api/${storeId}/billboard`, values);
       } catch (error) {
-        toast.error("cateogory creation failed");
+        toast.error("name change failed");
         console.log("rename", error);
       } finally {
         toast.success("rename completed");
@@ -114,7 +128,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
           />
           <b>
             <div className="text-3xl flex justify-between">
-              {initialData ? "Category Settings" : "Create Category"}
+              {initialData ? "Product Settings" : "Create Product"}
               {initialData ? (
                 <Button variant="destructive" onClick={() => setOpen(true)}>
                   <Trash2 className="h-4 w-4" />
@@ -127,12 +141,11 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
 
           <div className="text-muted-foreground">
             {initialData
-              ? "create changes on your Category"
-              : "Add a new Category"}
+              ? "create changes on your product"
+              : "Add a new product"}
           </div>
         </div>
         <Separator />
-
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -140,57 +153,83 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
           >
             <FormField
               control={form.control}
-              name="name"
+              name="images"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Upload Image</FormLabel>
                   <FormControl>
-                    <Input
+                    <ImageUpload
+                      value={field.value.map((image) => image.url)}
                       disabled={loading}
-                      placeholder="Category name"
-                      className="w-44 h-8"
-                      {...field}
+                      onChange={(url) =>
+                        field.onChange([...field.value, { url }])
+                      }
+                      onRemove={(url) =>
+                        field.onChange([
+                          ...field.value.filter(
+                            (current) => current.url !== url
+                          ),
+                        ])
+                      }
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
-            <div className="grid grid-cols-3 gap-8 ">
+            <div className="grid grid-cols-3 gap-8">
               <FormField
                 control={form.control}
-                name="billboardId"
+                name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Billboard</FormLabel>
-                    <Select
-                      disabled={loading}
-                      onValueChange={field.onChange}
-                      value={field.value}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue
-                            defaultValue={field.value}
-                            placeholder="Select a billboard"
-                          />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {billboards.map((billboard) => (
-                          <SelectItem key={billboard.id} value={billboard.id}>
-                            {billboard.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <FormLabel>Label</FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={loading}
+                        placeholder=""
+                        className="w-44 h-8"
+                        {...field}
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
+
+            <FormField
+              control={form.control}
+              name="billboardId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Billboard</FormLabel>
+                  <Select
+                    disabled={loading}
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          defaultValue={field.value}
+                          placeholder="Select a billboard"
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {billboards.map((billboard) => (
+                        <SelectItem key={billboard.id} value={billboard.id}>
+                          {billboard.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <Button type="submit">Submit</Button>
           </form>
         </Form>
@@ -200,4 +239,4 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   );
 };
 
-export default CategoryForm;
+export default ProductForm;
