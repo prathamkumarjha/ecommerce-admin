@@ -14,35 +14,24 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Billboard, category as Category } from "@prisma/client";
+import { color } from "@prisma/client";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
 import { AlertModal } from "@/components/deletion-alert";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 const formSchema = z.object({
   name: z.string().min(1),
-  billboardId: z.string().min(1),
+  value: z.string().min(1),
 });
 
-interface CategoryFormProps {
-  initialData: Category | null;
-  billboards: Billboard[];
+interface ColorFormProps {
+  initialData: color | null;
 }
 
-const CategoryForm: React.FC<CategoryFormProps> = ({
-  initialData,
-  billboards,
-}) => {
+const ColorForm: React.FC<ColorFormProps> = ({ initialData }) => {
   const params = useParams();
 
   const router = useRouter();
@@ -54,9 +43,9 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/${storeId}/categories/${initialData?.id}`);
+      await axios.delete(`/api/${storeId}/colors/${initialData?.id}`);
     } catch (error) {
-      console.error("Error deleting store:", error);
+      console.error("Error deleting color:", error);
     } finally {
       router.refresh();
       router.push("./");
@@ -67,19 +56,16 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
       name: "",
-      billboardId: "",
+      value: "",
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (initialData) {
       try {
-        await axios.patch(
-          `/api/${storeId}/categories/${initialData.id}`,
-          values
-        );
+        await axios.patch(`/api/${storeId}/colors/${initialData.id}`, values);
       } catch (error) {
-        toast.error("Category update failed");
+        toast.error("color update failed");
         console.log("rename", error);
       } finally {
         toast.success("rename completed");
@@ -88,9 +74,9 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
       }
     } else {
       try {
-        await axios.post(`/api/${storeId}/categories`, values);
+        await axios.post(`/api/${storeId}/colors`, values);
       } catch (error) {
-        toast.error("cateogory creation failed");
+        toast.error("color creation failed");
         console.log("rename", error);
       } finally {
         toast.success("rename completed");
@@ -114,7 +100,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
           />
           <b>
             <div className="text-3xl flex justify-between">
-              {initialData ? "Category Settings" : "Create Category"}
+              {initialData ? "Color Settings" : "Create Color"}
               {initialData ? (
                 <Button variant="destructive" onClick={() => setOpen(true)}>
                   <Trash2 className="h-4 w-4" />
@@ -126,13 +112,10 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
           </b>
 
           <div className="text-muted-foreground">
-            {initialData
-              ? "create changes on your Category"
-              : "Add a new Category"}
+            {initialData ? "create changes on your color" : "Add a new color"}
           </div>
         </div>
         <Separator />
-
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -147,7 +130,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Category name"
+                      placeholder="color name"
                       className="w-44 h-8"
                       {...field}
                     />
@@ -157,40 +140,30 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
               )}
             />
 
-            <div className="grid grid-cols-3 gap-8 ">
-              <FormField
-                control={form.control}
-                name="billboardId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Billboard</FormLabel>
-                    <Select
-                      disabled={loading}
-                      onValueChange={field.onChange}
-                      value={field.value}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue
-                            defaultValue={field.value}
-                            placeholder="Select a billboard"
-                          />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {billboards.map((billboard) => (
-                          <SelectItem key={billboard.id} value={billboard.id}>
-                            {billboard.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            <FormField
+              control={form.control}
+              name="value"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Value</FormLabel>
+                  <FormControl>
+                    <div className="flex">
+                      <Input
+                        disabled={loading}
+                        placeholder="Color value"
+                        className="w-44 h-8"
+                        {...field}
+                      />
+                      <div
+                        className="ml-4 p-4 rounded-full shadow-inner shadow-blue"
+                        style={{ backgroundColor: field.value }}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <Button type="submit">Submit</Button>
           </form>
         </Form>
@@ -200,4 +173,4 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   );
 };
 
-export default CategoryForm;
+export default ColorForm;
