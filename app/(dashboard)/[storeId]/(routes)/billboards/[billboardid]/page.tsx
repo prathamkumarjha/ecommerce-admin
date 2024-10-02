@@ -5,11 +5,11 @@ import BillboardForm from "@/app/(dashboard)/[storeId]/(routes)/billboards/[bill
 const BillboardPage = async ({
   params,
 }: {
-  params: { billboardId: string };
+  params: { billboardid: string };
 }) => {
   const billboard = await prismadb.billboard.findUnique({
     where: {
-      id: params.billboardId,
+      id: params.billboardid,
     },
   });
 
