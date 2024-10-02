@@ -32,7 +32,7 @@ export const ApiAlert: React.FC<ApiAlertProps> = ({
     toast.success("link copied");
   };
   return (
-    <Alert className="api-alert bg-white border border-gray-300 p-4 rounded-md">
+    <Alert className="api-alert  border border-gray-300 p-4 rounded-md">
       <Server className="h-4 w-4" />
       <AlertTitle>
         {title}
@@ -42,9 +42,9 @@ export const ApiAlert: React.FC<ApiAlertProps> = ({
       </AlertTitle>
       <div className="mt-2 flex justify-between items-center">
         <code className="whitespace-pre-wrap">
-          <span className="bg-gray-100 rounded p-0">{description}</span>
+          <span className=" rounded p-0">{description}</span>
         </code>
-        <Copy className="h-4 w-4" onClick={copy} />
+        <Copy className="h-4 w-4 cursor-pointer" onClick={copy} />
       </div>
     </Alert>
   );

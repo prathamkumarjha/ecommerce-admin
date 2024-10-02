@@ -119,8 +119,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
         console.log("product post", error);
       } finally {
         toast.success("product creation completed");
-        router.refresh();
         router.push("./");
+        router.refresh();
       }
     }
   };
