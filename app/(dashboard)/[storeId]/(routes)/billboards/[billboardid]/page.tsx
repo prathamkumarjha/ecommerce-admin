@@ -1,6 +1,6 @@
 import prismadb from "@/lib/prismadb";
 
-import BillboardForm from "@/app/(dashboard)/[storeId]/(routes)/billboards/[billboardId]/billboardForm";
+import BillboardForm from "@/app/(dashboard)/[storeId]/(routes)/billboards/[billboardID]/billboardForm";
 
 const BillboardPage = async ({
   params,
