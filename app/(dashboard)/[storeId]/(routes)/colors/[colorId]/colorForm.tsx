@@ -47,8 +47,8 @@ const ColorForm: React.FC<ColorFormProps> = ({ initialData }) => {
     } catch (error) {
       console.error("Error deleting color:", error);
     } finally {
-      router.refresh();
       router.push("./");
+      router.refresh();
     }
   };
 

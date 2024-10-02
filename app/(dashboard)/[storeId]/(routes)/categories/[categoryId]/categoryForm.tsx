@@ -58,8 +58,8 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
     } catch (error) {
       console.error("Error deleting store:", error);
     } finally {
-      router.refresh();
       router.push("./");
+      router.refresh();
     }
   };
 

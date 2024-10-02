@@ -49,11 +49,20 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     toast.success("Billboard ID copied to clipboard.");
   };
 
+  const onclose = () => {
+    // setTimeout(() => {
+    setOpen(false);
+    //   if (!open) {
+    //     console.log(open);
+    //     document.body.style.pointerEvents = "";
+    //   }
+    // }, 100);
+  };
   return (
     <>
       <AlertModal
         isOpen={open}
-        onClose={() => setOpen(false)}
+        onClose={onclose}
         onConfirm={onConfirm}
         loading={loading}
       />
@@ -76,7 +85,12 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           >
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpen(true)}>
+          <DropdownMenuItem
+            onClick={() => {
+              document.body.style.pointerEvents = "";
+              setOpen(true);
+            }}
+          >
             <Trash className="mr-2 h-4 w-4" /> Delete
           </DropdownMenuItem>
         </DropdownMenuContent>

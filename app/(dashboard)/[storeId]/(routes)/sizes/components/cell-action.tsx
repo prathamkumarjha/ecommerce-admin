@@ -33,12 +33,12 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
       setLoading(true);
       await axios.delete(`/api/${params.storeId}/sizes/${data.id}`);
       toast.success("Size deleted.");
-      router.refresh();
     } catch (error) {
       toast.error("An error occured while deleting the size.");
     } finally {
       setOpen(false);
       setLoading(false);
+      router.refresh();
     }
   };
 
@@ -72,7 +72,12 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           >
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpen(true)}>
+          <DropdownMenuItem
+            onClick={() => {
+              document.body.style.pointerEvents = "";
+              setOpen(true);
+            }}
+          >
             <Trash className="mr-2 h-4 w-4" /> Delete
           </DropdownMenuItem>
         </DropdownMenuContent>

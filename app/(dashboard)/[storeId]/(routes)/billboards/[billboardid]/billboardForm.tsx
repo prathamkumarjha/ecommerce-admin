@@ -72,8 +72,9 @@ const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => {
         console.log("rename", error);
       } finally {
         toast.success("rename completed");
-        router.refresh();
+
         router.push("./");
+        router.refresh();
       }
     } else {
       try {
